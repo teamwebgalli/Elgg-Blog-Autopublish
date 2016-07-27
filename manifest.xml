@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin_manifest xmlns="http://www.elgg.org/plugin_manifest/1.8">
+	<name>Blog Autopublish</name>
+	<id>blog_autopublish</id>
+	<author>Team Webgalli</author>
+	<version>1.0</version>
+	<category>contents</category>
+	<description>Adds the option to publish blogs automatically in future dates.</description>
+	<website>http://www.webgalli.com/</website>
+	<copyright>Team Webgalli</copyright>
+	<license>GNU General Public License version 2</license>
+	<requires>
+		<type>elgg_release</type>
+		<version>2.0</version>
+	</requires>
+	<requires>
+		<type>plugin</type>
+		<name>blog</name>
+	</requires>
+	<requires>
+		<type>priority</type>
+		<priority>after</priority>
+		<plugin>blog</plugin>
+	</requires>		
+</plugin_manifest>
