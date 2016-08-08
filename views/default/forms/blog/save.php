@@ -51,12 +51,49 @@ if($users == 'admin'){
 if($show_autopublish){
 	elgg_require_js('blog/autopublish');
 	$publish_on_label = elgg_echo('blog:publish_on');
-	$publish_on_input = elgg_view('input/date', array(
-		'value' => $blog->publish_on ?: $vars['publish_on'],
-		'name' => 'publish_on',
-		'timestamp' => true,
-		'class' => '',
-	));
+	$publish_on_value = $blog->publish_on ?: $vars['publish_on'];
+	$input_field = elgg_get_plugin_setting('input_field', 'blog_autopublish', 'datepicker');
+	if($input_field == 'datepicker'){
+		$publish_on_input = elgg_view('input/date', array('value' => $publish_on_value, 'name' => 'publish_on', 'timestamp' => true, 'class' => '',));
+	} else {
+		$publish_on_year = $publish_on_month = $publish_on_date = $publish_on_hour = $publish_on_minute = "";
+		$days = $months =  $years = $hours = $minutes = array();
+		if(!empty($publish_on_value)){
+			$date = date('j-n-Y-G-i', $publish_on_value);
+			$explode = explode('-', $date);
+			$publish_on_date = $explode[0];
+			$publish_on_month = $explode[1];
+			$publish_on_year = $explode[2];
+			$publish_on_hour = $explode[3];
+		}
+		for ($i=1; $i<=31; $i++) {
+			$v = str_pad($i, 2, "0", STR_PAD_LEFT);
+			$days[$v] = $v;
+		}
+		$publish_on_date_input = elgg_view('input/select', 	array('value' => $publish_on_date, 	'name' => "publish_on['j']", 	'options_values' => $days, 	'class' => 'mrm'));
+
+		for ($i=1; $i<=12; $i++) {
+			$v = str_pad($i, 2, "0", STR_PAD_LEFT);
+			$months[$v] = $v;
+		}
+		$publish_on_month_input = elgg_view('input/select', array('value' => $publish_on_month, 'name' => "publish_on['n']", 	'options_values' => $months,'class' => 'mrm'));
+
+		$this_year = date('Y');
+		for ($i=$this_year; $i<=($this_year+10); $i++) {
+			$years[$i] = $i;
+		}
+		$publish_on_year_input = elgg_view('input/select', 	array('value' => $publish_on_year, 	'name' => "publish_on['Y']", 	'options_values' => $years,	'class' => 'mrm'));
+
+		for ($i=0; $i<=23; $i++) {
+			$v = str_pad($i, 2, "0", STR_PAD_LEFT);
+			$hours[$v] = "$v:00";
+		}
+		$publish_on_hour_input = elgg_view('input/select', 	array('value' => $publish_on_hour, 	'name' => "publish_on['G']", 	'options_values' => $hours, 'class' => 'mrm'));
+		
+		$publish_on_minute_input = elgg_view('input/hidden',array('value' => "00", 'name' => "publish_on['i']", 'class' => ''));
+
+		$publish_on_input = $publish_on_date_input . $publish_on_month_input . $publish_on_year_input . $publish_on_hour_input . $publish_on_minute_input;
+	}	
 	$publish_on_div = "	<div class='publish_on hidden'>
 							<label for='publish_on'>$publish_on_label</label>
 							$publish_on_input

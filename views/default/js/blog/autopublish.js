@@ -1,8 +1,8 @@
 define(['require', 'jquery', 'elgg'], function(require, $, elgg) {
 	$(document).ready(function(){
 		var statusField = $('#blog_status');
-		var publishOnDiv = $('.publish_on');
 		var val = statusField.val();
+		var publishOnDiv = $('.publish_on');
 		if( val == 'draft' ){
 			publishOnDiv.show();
 		} 

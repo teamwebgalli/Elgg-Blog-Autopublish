@@ -32,3 +32,19 @@ echo elgg_view('input/select', array(
 	'value' => $vars['entity']->notify_author,
 ));
 echo '</div>';
+
+if (!isset($vars['entity']->input_field)) {
+	$vars['entity']->input_field = 'datepicker';
+}
+echo '<div>';
+echo elgg_echo('blog:publish_on:input_field');
+echo ' ';
+echo elgg_view('input/select', array(
+	'name' => 'params[input_field]',
+	'options_values' => array(
+		'datepicker' => elgg_echo('blog:publish_on:option:datepicker'),
+		'hourpicker' => elgg_echo('blog:publish_on:option:hourpicker')
+	),
+	'value' => $vars['entity']->input_field,
+));
+echo '</div>';

@@ -25,9 +25,11 @@ function blog_autopublish_cron($hook, $entity_type, $returnvalue, $params) {
 												'type' => 'object',
 												'subtype' => 'blog',
 												'metadata_name_value_pairs' => array('name' => 'publish_on', 'value' => $offset, 'operand' => '<='),
+												'limit' => 0,
 											));	
 	if($blogs){
 		$site = elgg_get_site_entity();
+		$notify_author = elgg_get_plugin_setting('notify_author', 'blog_autopublish', 'yes');
 		foreach($blogs as $blog){		
 			$author_guid =  $blog->owner_guid;
 			$author = get_user($author_guid);
@@ -38,17 +40,17 @@ function blog_autopublish_cron($hook, $entity_type, $returnvalue, $params) {
 				'object_guid' => $blog->getGUID(),
 			));			
 			elgg_trigger_event('publish', 'object', $blog);
-			$blog->status = 'published';
-			$blog->access_id = ACCESS_PUBLIC;
+			$blog->access_id = $blog->future_access;
 			$blog->time_created = time();
+			$blog->status = 'published';
 			$blog->deleteMetadata('publish_on');
-			$blog->save();
-			$notify_author = elgg_get_plugin_setting('notify_author', 'blog_autopublish', 'yes');
-			if($notify_author){
-				$message_subject = elgg_echo('blog:publish_on:message:subject', array(), $author->language);
-				$message_body = elgg_echo('blog:publish_on:message:body', array($author->name, $blog->title, $site->name, $blogg->getULR()), $author->language);
-				notify_user($author_guid, $site->guid, $message_subject, $message_body, array(), 'email');
-			}
+			if($blog->save()){
+				if($notify_author){
+					$message_subject = elgg_echo('blog:publish_on:message:subject', array(), $author->language);
+					$message_body = elgg_echo('blog:publish_on:message:body', array($author->name, $blog->title, $site->name, $blog->getURL()), $author->language);
+					notify_user($author_guid, $site->guid, $message_subject, $message_body, array(), 'email');
+				}
+			}				
 		}
 		$resulttext = elgg_echo("blog:publish_on:numbers", array(count($blogs)));
 	}	

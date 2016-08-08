@@ -3,7 +3,7 @@
 	<name>Blog Autopublish</name>
 	<id>blog_autopublish</id>
 	<author>Team Webgalli</author>
-	<version>1.0</version>
+	<version>1.2</version>
 	<category>contents</category>
 	<description>Adds the option to publish blogs automatically in future dates.</description>
 	<website>http://www.webgalli.com/</website>

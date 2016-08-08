@@ -73,13 +73,7 @@ foreach ($values as $name => $default) {
 	if (in_array($name, $required) && empty($value)) {
 		$error = elgg_echo("blog:error:missing:$name");
 	}
-	
-	// see if publish_on is in a past date
-	$publish_on = get_input('publish_on');
-	if( !empty($publish_on) && ($publish_on < time()) ){
-		$error = elgg_echo("blog:publish_on:pastdate");
-	}
-
+		
 	if ($error) {
 		break;
 	}
@@ -107,6 +101,21 @@ foreach ($values as $name => $default) {
 				unset($values[$name]);
 			}
 			break;
+			
+		case 'publish_on':
+			if (empty($value)) {
+				unset($values[$name]);
+			} else {
+				if(is_array($value)){
+					$value = strtotime(implode("-", $value));
+				}
+				if($value < time()){
+					$error = elgg_echo("blog:publish_on:pastdate");
+				} else {	
+					$values[$name] = $value;
+				}	
+			}
+			break;		
 
 		default:
 			$values[$name] = $value;
